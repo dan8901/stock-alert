@@ -6,5 +6,6 @@
   "contact_info": {
     "name": "Dan Nissim",
     "email": "thestockalertapp@gmail.com"
-  }
+  },
+  "price_drop_percentage_threshold": 0.8
 }

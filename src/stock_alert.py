@@ -20,7 +20,6 @@ CONFIG_PATH = pathlib.Path('./src/config.json')
 SMTP_PORT = 465
 GMAIL_SMPT_SERVER_ADDRESS = 'smtp.gmail.com'
 APP_EMAIL_ADDRESS = 'thestockalertapp@gmail.com'
-PRICE_DROP_PERCENTAGE_THRESHOLD = 0.8
 LOGO_PATH = pathlib.Path('./images/logo.png')
 EMAIL_SUBJECT = 'Stock price alert'
 HTML_PATH = pathlib.Path('./src/index.html')
@@ -42,13 +41,14 @@ class ContactInfo(pydantic.BaseModel):
 class Config(pydantic.BaseModel):
     tickers: typing.List[str]
     contact_info: ContactInfo
+    price_drop_percentage_threshold: float
 
 
 async def stock_alert():
     config = _load_config()
     quotes = await _get_all_quotes(config.tickers)
     for quote in quotes:
-        if _should_notify(quote):
+        if _should_notify(quote, config.price_drop_percentage_threshold):
             _notify(quote, config.contact_info)
 
 def _load_config() -> Config:
@@ -65,8 +65,8 @@ async def _get_all_quotes(tickers: typing.List[str]) -> typing.List[Quote]:
     return quotes
 
 
-def _should_notify(quote: Quote) -> bool:
-    return quote.price <= PRICE_DROP_PERCENTAGE_THRESHOLD * quote.priceAvg200
+def _should_notify(quote: Quote, price_drop_percentage_threshold: float) -> bool:
+    return quote.price <= price_drop_percentage_threshold * quote.priceAvg200
 
 
 def _notify(quote: Quote, contact_info: ContactInfo):
