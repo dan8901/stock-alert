@@ -24,6 +24,7 @@ LOGO_PATH = pathlib.Path('./images/logo.png')
 EMAIL_SUBJECT = 'Stock price alert'
 HTML_PATH = pathlib.Path('./src/index.html')
 READABLE_DATETIME_FORMAT = '%B %d, %Y, %H:%M'
+NUMBER_OF_DIGITS_TO_ROUND = 2
 
 class Quote(pydantic.BaseModel):
     symbol: str
@@ -81,8 +82,8 @@ def _generate_html(name: str, quote: Quote) -> str:
         'symbol': quote.symbol,
         'stock_name': quote.name,
         'datetime': datetime.datetime.fromtimestamp(quote.timestamp).strftime(READABLE_DATETIME_FORMAT),
-        'price': quote.price,
-        'price_200_day_avg': quote.priceAvg200
+        'price': round(quote.price, NUMBER_OF_DIGITS_TO_ROUND),
+        'price_200_day_avg': round(quote.priceAvg200, NUMBER_OF_DIGITS_TO_ROUND)
     }
     return jinja2.Template(unformatted_html).render(html_data)
 
