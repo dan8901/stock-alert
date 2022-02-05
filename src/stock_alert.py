@@ -89,7 +89,8 @@ def _generate_html(name: str, quote: Quote) -> str:
                      datetime=datetime.datetime.fromtimestamp(
                          quote.timestamp).strftime(READABLE_DATETIME_FORMAT),
                      price=round(quote.price, NUMBER_OF_DIGITS_TO_ROUND),
-                     price_200_day_avg=round(quote.priceAvg200, NUMBER_OF_DIGITS_TO_ROUND))
+                     price_200_day_avg=round(quote.priceAvg200, NUMBER_OF_DIGITS_TO_ROUND),
+                     percentage_price_is_lower_than_average=int((1 - quote.price / quote.priceAvg200) * 100))
     return jinja2.Template(unformatted_html).render(html_data)
 
 
