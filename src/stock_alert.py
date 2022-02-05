@@ -22,7 +22,7 @@ GMAIL_SMPT_SERVER_ADDRESS = 'smtp.gmail.com'
 APP_EMAIL_ADDRESS = 'thestockalertapp@gmail.com'
 LOGO_PATH = pathlib.Path('./images/logo.png')
 EMAIL_SUBJECT = 'Stock price alert'
-HTML_PATH = pathlib.Path('./src/email_template.html')
+HTML_PATH = pathlib.Path('./static/email_template.html')
 READABLE_DATETIME_FORMAT = '%B %d, %Y, %H:%M'
 NUMBER_OF_DIGITS_TO_ROUND = 2
 
