@@ -1,10 +1,11 @@
+import asyncio
+import datetime
 import json
 import os
 import pathlib
 import smtplib
 import ssl
 import typing
-import datetime
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -25,6 +26,7 @@ EMAIL_SUBJECT = 'Stock price alert'
 HTML_PATH = pathlib.Path('./static/email_template.html')
 READABLE_DATETIME_FORMAT = '%B %d, %Y, %H:%M'
 NUMBER_OF_DIGITS_TO_ROUND = 2
+SECONDS_TO_WAIT_BETWEEN_API_CALLS = 1
 
 
 class Quote(pydantic.BaseModel):
@@ -65,6 +67,8 @@ async def _get_all_quotes(symbols: typing.List[str]) -> typing.List[Quote]:
             raw_response = await fmp_client.get(f'/quote/{symbol}', params=API_KEY_PARAM)
             raw_response.raise_for_status()
             quotes.append(Quote.parse_obj(raw_response.json()[0]))
+            # the free API has a rate limit
+            await asyncio.sleep(SECONDS_TO_WAIT_BETWEEN_API_CALLS)
     return quotes
 
 
