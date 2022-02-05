@@ -1,11 +1,43 @@
 {
-  "tickers": [
-    "TQQQ",
-    "TNA"
+  "symbols": [
+    "SOXL",
+    "TNA",
+    "UPRO",
+    "YINN",
+    "LABU",
+    "ERX",
+    "UDOW",
+    "NUGT",
+    "FNGU",
+    "GUSH",
+    "TECL",
+    "FAS",
+    "DFEN",
+    "DPST",
+    "URTY",
+    "NAIL",
+    "REML",
+    "NRGU",
+    "BRZU",
+    "RETL",
+    "PILL",
+    "TPOR",
+    "DRN",
+    "KORU",
+    "BNKU",
+    "OOTO",
+    "CURE",
+    "MIDU",
+    "HIBL",
+    "UTSL",
+    "EDC",
+    "DUSL",
+    "WANT",
+    "EURL"
   ],
   "contact_info": {
     "name": "Dan Nissim",
     "email": "nissim.dan@gmail.com"
   },
-  "price_drop_percentage_threshold": 0.8
+  "price_drop_percentage_threshold": 0.2
 }

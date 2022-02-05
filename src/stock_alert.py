@@ -4,14 +4,14 @@ import pathlib
 import smtplib
 import ssl
 import typing
+import datetime
+from email.mime.image import MIMEImage
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 import httpx
-import pydantic
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from email.mime.image import MIMEImage
 import jinja2
-import datetime
+import pydantic
 
 FMP_API_URL = 'https://financialmodelingprep.com/api/v3'
 API_KEY_PARAM = {'apikey': os.environ['API_KEY']}
@@ -22,9 +22,10 @@ GMAIL_SMPT_SERVER_ADDRESS = 'smtp.gmail.com'
 APP_EMAIL_ADDRESS = 'thestockalertapp@gmail.com'
 LOGO_PATH = pathlib.Path('./images/logo.png')
 EMAIL_SUBJECT = 'Stock price alert'
-HTML_PATH = pathlib.Path('./src/index.html')
+HTML_PATH = pathlib.Path('./src/email_template.html')
 READABLE_DATETIME_FORMAT = '%B %d, %Y, %H:%M'
 NUMBER_OF_DIGITS_TO_ROUND = 2
+
 
 class Quote(pydantic.BaseModel):
     symbol: str
@@ -40,34 +41,35 @@ class ContactInfo(pydantic.BaseModel):
 
 
 class Config(pydantic.BaseModel):
-    tickers: typing.List[str]
+    symbols: typing.List[str]
     contact_info: ContactInfo
     price_drop_percentage_threshold: float
 
 
 async def stock_alert():
     config = _load_config()
-    quotes = await _get_all_quotes(config.tickers)
+    quotes = await _get_all_quotes(config.symbols)
     for quote in quotes:
         if _should_notify(quote, config.price_drop_percentage_threshold):
             _notify(quote, config.contact_info)
+
 
 def _load_config() -> Config:
     return Config.parse_obj(json.loads(CONFIG_PATH.read_text()))
 
 
-async def _get_all_quotes(tickers: typing.List[str]) -> typing.List[Quote]:
+async def _get_all_quotes(symbols: typing.List[str]) -> typing.List[Quote]:
     quotes = list()
     async with httpx.AsyncClient(base_url=FMP_API_URL) as fmp_client:
-        for ticker in tickers:
-            raw_response = await fmp_client.get(f'/quote/{ticker}', params=API_KEY_PARAM)
+        for symbol in symbols:
+            raw_response = await fmp_client.get(f'/quote/{symbol}', params=API_KEY_PARAM)
             raw_response.raise_for_status()
             quotes.append(Quote.parse_obj(raw_response.json()[0]))
     return quotes
 
 
 def _should_notify(quote: Quote, price_drop_percentage_threshold: float) -> bool:
-    return quote.price <= price_drop_percentage_threshold * quote.priceAvg200
+    return quote.price <= (1 - price_drop_percentage_threshold) * quote.priceAvg200
 
 
 def _notify(quote: Quote, contact_info: ContactInfo):
@@ -77,15 +79,15 @@ def _notify(quote: Quote, contact_info: ContactInfo):
 
 def _generate_html(name: str, quote: Quote) -> str:
     unformatted_html = HTML_PATH.read_text()
-    html_data = {
-        'name': name,
-        'symbol': quote.symbol,
-        'stock_name': quote.name,
-        'datetime': datetime.datetime.fromtimestamp(quote.timestamp).strftime(READABLE_DATETIME_FORMAT),
-        'price': round(quote.price, NUMBER_OF_DIGITS_TO_ROUND),
-        'price_200_day_avg': round(quote.priceAvg200, NUMBER_OF_DIGITS_TO_ROUND)
-    }
+    html_data = dict(name=name,
+                     symbol=quote.symbol,
+                     stock_name=quote.name,
+                     datetime=datetime.datetime.fromtimestamp(
+                         quote.timestamp).strftime(READABLE_DATETIME_FORMAT),
+                     price=round(quote.price, NUMBER_OF_DIGITS_TO_ROUND),
+                     price_200_day_avg=round(quote.priceAvg200, NUMBER_OF_DIGITS_TO_ROUND))
     return jinja2.Template(unformatted_html).render(html_data)
+
 
 def _send_email(email_address: str, html: str):
     message = MIMEMultipart()
