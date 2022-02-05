@@ -62,8 +62,8 @@ So, I built this app with some extra features.
 ## Usage
 
 1. Add your stock list and contact info to `config.json`.
-2. Create a virtual environment (optional):
-    a. `python -m venv venv`
+2. Create a virtual environment (optional):  
+    a. `python -m venv venv`  
     b. `venv\Scripts\activate` or in linux `source venv/bin/activate`
 2. install the requirements: `pip install -r requirements.txt`
 2. Run `python main.py`
