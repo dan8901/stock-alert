@@ -77,7 +77,7 @@ When a stock price passes the threshold, you will receive an email that will not
 <img src="static/email_example.png" alt="Email Example" width="939" height="589">
 
 
-## Deployment
+### Deployment
 * I've personally deployed this app with PythonAnywhere, which lets me run this as a daily task for free with a quick setup.
 
 <!-- CONTRIBUTING -->
