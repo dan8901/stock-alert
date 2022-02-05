@@ -51,7 +51,7 @@ So, I built this app with some extra features.
 ### Built With
 
 * [Python 3.8](https://python.org/)
-* [Financial Modeling Prep](https://site.financialmodelingprep.com/)
+* [Financial Modeling Prep's free API](https://site.financialmodelingprep.com/)
 * [Free HTML Email Templates](https://unlayer.com/templates)
 * [Jinja2](https://jinja.palletsprojects.com/en/3.0.x/)
 * [PythonAnywhere](https://www.pythonanywhere.com/)
