@@ -1,3 +1,4 @@
 httpx
 pydantic
 jinja2
+python-dotenv
