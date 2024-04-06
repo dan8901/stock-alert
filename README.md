@@ -105,18 +105,6 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-
-
-<!-- CONTACT -->
-## Contact
-
-Dan Nissim - nissim.dan@gmail.com
-
-Project Link: [https://github.com/dannissim/stock-alert](https://github.com/dannissim/stock-alert)
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [contributors-shield]: https://img.shields.io/github/contributors/dannissim/stock-alert.svg?style=for-the-badge
